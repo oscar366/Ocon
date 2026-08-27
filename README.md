@@ -22,14 +22,21 @@ If you find a reason, please tell me.
 - Conditionals
 - Sections
 - Goto command
-- Math functions
+- Math commands
 - Comments
-- Return functions
+- Return commands
+- Imports & fancy imports
 
 ## Hopefuly new Features to come
 
-- Reflection
 - A way to install and update ocon
+- String handling
+- Arrays
+- Better loops
+- User input
+- Error handling
+- Files
+- Reflection
 
 ## Egg samples of Ocon
 

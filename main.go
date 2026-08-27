@@ -12,22 +12,34 @@ import (
 	"os/exec"
 	"strconv"
 )
+//set PATH=%PATH%;C:\path\to\your\install\directory
+const version = "0.0.0"
+//major, minor, patch
+const versionName = "semi-stable"
+
+var necesitoactualizar = false
 
 func main() {
 	fmt.Println("🐟")
-
+	
+	
+	//test if there needs to be an update here
+	
+	
 	if len(os.Args) < 2 {
 		var i string
 		fmt.Println("This is OCON a language created by Oscar! (see more at: https://github.com/oscar366/Ocon or https://ocon.oscarsgoofy.site)")
 		fmt.Println(`To execute an .ocon file do: "ocon execute {path}"`)
-		fmt.Println("this is a command line tool use it in cmd")
+		fmt.Println("this is a command line tool use it in cmd.exe")
+		fmt.Println("You have to add ocon to path yourself")
 		fmt.Println("")
 		fmt.Println("type something and click enter to leave")
 		fmt.Scan(&i)
 		fmt.Println(i)
 		return
 	}
-
+	//test if ocon is in path else place it there
+	
 	switch os.Args[1] {
 	case "execute":
 		if len(os.Args) < 3 {
@@ -41,12 +53,27 @@ func main() {
 		for i := 0; i < 9999; i++ {
 			fmt.Println(string(i) + ": 🐟")
 		}
-
 	case "help":
-		fmt.Println("This is OCON a language created by Oscar!")
+		fmt.Println("This is OCON a language created by Oscar! To see more about it see the github (https://github.com/oscar366/Ocon) or the website (https://ocon.oscarsgoofy.site)")
 		fmt.Println(`To execute an .ocon file do: "ocon execute {path}"`)
+		fmt.Println("")
+		fmt.Println("`ocon 🐟` ??")
+		fmt.Println("`ocon execute {path}` execute ocon file")
+		fmt.Println("`ocon update` get new ocon updates (see more about it with `ocon update help`)")
+		fmt.Println("`ocon version` to see what version you are using")
+	case "version":
+		fmt.Println("V" + version + " - " + versionName)
+	case "update":
+		//necesitoactualizar
+		fmt.Println("curently inactive oscar is working on it :)")
+		/*if os.Args[2] == "help" {
+			fmt.Println("Running `ocon update` it downloads the next exe file for ocon in the same folder (does not deleate the prev update)")
+		} else if len(os.Args) < 3 && len(os.Args) > 1 {
+			fmt.Println("downloading now")
+			
+		}*/
 	default:
-		fmt.Println("Put in an input")
+		fmt.Println("Put in an a real input see `ocon help`")
 	}
 }
 
@@ -64,9 +91,6 @@ func readFile(path string) {
 	scanner := bufio.NewScanner(file)
     
     for scanner.Scan() {
-		/*if pointer == 1 { 
-			fmt.Println(scanner.Text())
-		}*/
 		lines = append(lines, scanner.Text())
     }
 
@@ -87,7 +111,7 @@ var commmands = map[string]Command{//typo i cant fix commmands
 	//vars
     "var":       commands.VarCmd,
     "increment": commands.IncrementCmd,
-	"decremnt": commands.DecremntCmd, 
+	"decrement": commands.DecremntCmd, 
 	//"program": commands.ProgramCmd,
 	
 	//sections
@@ -137,16 +161,7 @@ for i, line := range lines {
 			// Move past the newly inserted lines
 			i += len(newlines) - 1
 		} else {
-			//were doing fancy imports in here if were doing them agean
-			/*cmd := exec.Command(parts[2], )
-			stdout, err := cmd.Output()
-				
-			if err != nil {
-				fmt.Println(err.Error())
-				return
-			}
-
-			fmt.Print(string(stdout))*/
+			//were doing fancy imports in here if were doing them agean 
 				//check as
 				//import f command {path} as x
 				//0      1  2       3     4  5
