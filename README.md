@@ -29,9 +29,8 @@ If you find a reason, please tell me.
 
 ## Hopefuly new Features to come
 
-- A way to install and update ocon
-- String handling
 - Arrays
+- String handling
 - Better loops
 - User input
 - Error handling
