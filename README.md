@@ -25,6 +25,7 @@ If you find a reason, please tell me.
 - Math commands
 - Comments
 - Return commands
+- Everything as a string
 - Imports & fancy imports
 
 ## Hopefuly new Features to come

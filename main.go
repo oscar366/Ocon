@@ -10,6 +10,7 @@ import (
 	"oscarsgoofysite/OCON/commands"
 	"oscarsgoofysite/OCON/state"
 	"oscarsgoofysite/OCON/returncommands"
+	"oscarsgoofysite/OCON/functions"
 	
 	"os/exec"//for fancy imports
 	"net/http"//for updates
@@ -110,7 +111,7 @@ type ReleaseAsset struct {
 	Name               string `json:"name"`
 	BrowserDownloadURL string `json:"browser_download_url"`
 }
-
+//reinstall the file for updates
 func reinstallOcon() {
 	if !necesitoactualizar {
 		fmt.Println("tú no necesitas actualizar (you don't need an update) 🐟")
@@ -275,7 +276,8 @@ var commmands = map[string]Command{//typo i cant fix commmands
 	
 	//conditionals
 	"if": commands.If,
-	
+	//"funcobj":
+	"end": emptycommand,
 	
 	"import": emptycommand,
 }
@@ -289,12 +291,15 @@ fmt.Println("===============================")
 fmt.Println(" ")
 
 //more complacted for loop :-0
+//this is the preprossesing things
+//for exaple puting the sections into the array and adding the import statments
 for i, line := range lines {
     parts := strings.Fields(line) // sperate by " "
+	//sectionals
     if len(parts) >= 2 && (parts[0] == "§" || parts[0] == "sec") { //if there is more then 2 inputs and its a section then run
         state.SectionList[parts[1][1:]] = i //add to the map the name and line number of the section
     }
-	
+	//if its an import statment
 	if len(parts) >= 2 && parts[0] == "import" {
 		if parts[1] != "f" {
 			importfile := parts[1][1:]
@@ -336,6 +341,22 @@ for i, line := range lines {
 				}
 			}
 		}
+	//the len(parts) is importent but i have no idea why
+	if len(parts) >= 2 && parts[0] == "func" {
+		
+		var n int
+		for lines[n] != "end" && n < (len(lines) + 1) {
+			n++
+		}
+		endlinenum := n //i know its at + 1 but i removed it cuz we dont need the end anyway
+		//i is being wird here
+		codeslice := lines[i+1:endlinenum]
+		codestring := strings.Join(codeslice, "\n")
+		fmt.Printf("%q\n", strings.Join(codeslice, "\n")) //debug line
+		functions.functionsAdd(codestring)
+	} else if len(parts) == 1 {
+		fmt.Println("insufent args")
+	}
 }
 
 
@@ -421,7 +442,7 @@ firstpos := 0
 			firstpos = i + 1
 		}
 		
-		if(element[0] == '$') {
+		if(len(element) > 1 && element[0] == '$') {
 			//if it is a var then replaces
 			varname := element[1:]
 			
