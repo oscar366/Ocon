@@ -5,6 +5,7 @@ import (
 	//"math/rand/v2"
 	"strconv"
 	"oscarsgoofysite/OCON/mathfuncs"
+	"oscarsgoofysite/OCON/state"
 	"log"
 	"os/exec"
 )
@@ -57,7 +58,9 @@ func Intrp(args []string) []string {
 
 func AddToReturnCommands(command string, path string) {
 	//add to return commands
+	if state.DebugMode {
 	fmt.Println("adding:" + path + " as Return:" + command)
+	}
 	var function Function = func(args []string) []string {
 		out, err := exec.Command(path, args...).Output()
 
@@ -73,7 +76,7 @@ func AddToReturnCommands(command string, path string) {
 	_, ok := returncommands[command]
 	//thnks stakoverflow: https://stackoverflow.com/questions/2050391/ddg#2050629
 	// If the key exists
-	if ok {
+	if ok && state.DebugMode {
 		// Do something
 		fmt.Println("Key is found (in returncommands) :)")
 	} else {

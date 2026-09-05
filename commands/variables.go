@@ -14,10 +14,10 @@ func VarCmd(args []string) {
 		fmt.Println("No args for var command:0")
 	}
 	
-	//empty var (for later)
+	//empty var
 	if len(args) == 1 {
-		//state.VarStorage
-		fmt.Println("epmty vars have not yet been implemnted")
+		state.VarStorage[args[0][1:]] = ""
+		//fmt.Println("epmty vars have not yet been implemnted")
 	}
 	
 	if len(args) == 2 {

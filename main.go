@@ -21,11 +21,12 @@ import (
 //set PATH=%PATH%;C:\path\to\your\install\directory
 
 //set this to that tag vershion thingy 
-const version = "v0.0.1"
+const version = "v1.2.1"//ver 1, 2 new fetures, 1 debug fix from prev vir
 //major, minor, patch
 const versionName = "semi-stable"
 
 var necesitoactualizar = false
+
 
 func main() {
 	fmt.Println("🐟")
@@ -233,7 +234,8 @@ func ifNecesitoActualizar() {
 }
 
 func readFile(path string) {
-	fmt.Println("executing:" + path)
+	
+	
 	
 	lines := []string{}
 	
@@ -253,6 +255,15 @@ func readFile(path string) {
         log.Fatal(err)
     }
 	
+	if lines[0] == "!debugOFF" || lines[1] == "!debugOFF" {
+		state.DebugMode = false;
+	} else {
+		fmt.Println("executing:" + path)//same as using `if state.DebugMode`
+	}
+	
+	if lines[0] == "!windowOFF" || lines[1] == "!windowOFF" {
+		fmt.Println("Not currently built")
+	}
 	
 	executeall(lines)
 }
@@ -276,7 +287,7 @@ var commmands = map[string]Command{//typo i cant fix commmands
 	
 	//conditionals
 	"if": commands.If,
-	//"funcobj":
+	"func": emptycommand,
 	"end": emptycommand,
 	
 	"import": emptycommand,
@@ -285,11 +296,12 @@ var commmands = map[string]Command{//typo i cant fix commmands
 
 func executeall(lines []string) {
 	//before runing the program get the positons of all the sections
+if state.DebugMode {
 fmt.Println(" ")
 fmt.Println("doing setup")
 fmt.Println("===============================")
 fmt.Println(" ")
-
+}
 //more complacted for loop :-0
 //this is the preprossesing things
 //for exaple puting the sections into the array and adding the import statments
@@ -330,9 +342,11 @@ for i, line := range lines {
 				
 				if parts[2] == "command" {
 					//asname, path
+					if state.DebugMode {
 					fmt.Println("")
 					fmt.Println("debug fancy imports:")
 					fmt.Println("____________________")
+					}
 					addToCommands(parts[5][1:], parts[3][1:])
 				} else if parts[2] == "returncommand" {
 					returncommands.AddToReturnCommands(parts[5][1:], parts[3][1:])
@@ -343,24 +357,33 @@ for i, line := range lines {
 		}
 	//the len(parts) is importent but i have no idea why
 	if len(parts) >= 2 && parts[0] == "func" {
+		if len(parts) < 2 {
+			panic("not enogh args for 'func' command at roughly at:" + string(i))
+		}
 		
 		var n int
-		for lines[n] != "end" && n < (len(lines) + 1) {
+		//parts [1][1:] is the func name
+		for lines[n] != "end @" + parts[1][1:] && n < (len(lines) + 1) {
 			n++
 		}
 		endlinenum := n //i know its at + 1 but i removed it cuz we dont need the end anyway
 		//i is being wird here
 		codeslice := lines[i+1:endlinenum]
 		codestring := strings.Join(codeslice, "\n")
-		fmt.Printf("%q\n", strings.Join(codeslice, "\n")) //debug line
-		functions.functionsAdd(codestring)
-	} else if len(parts) == 1 {
-		fmt.Println("insufent args")
+		//fmt.Printf("%q\n", strings.Join(codeslice, "\n")) //debug line
+		length := endlinenum - (i + 1)
+		//here we remove the lines so it does not execute
+		lines = append(lines[:i],lines[endlinenum+1:]...)
+		functions.AddToFunctions(codestring, parts[1][1:], length)
+	}
+	//for loops
+	if len(parts) >= 2 && parts[0] == "for" {
+		fmt.Println("not currently on oscar is working on it please be paishont")
 	}
 }
 
 
-
+if state.DebugMode {
 fmt.Println("")
 fmt.Println("debug S:")
 for key, value := range state.SectionList {
@@ -371,20 +394,33 @@ fmt.Println(" ")
 fmt.Println("setup complete")
 fmt.Println("====================================")
 fmt.Println(" ")
-
+}
 //real execution above is setup
 	for state.Pointer < len(lines) {
-		//fmt.Printf("%d: %s\n", state.Pointer, lines[state.Pointer]) debug
-	
+		
+		if lines[state.Pointer] == "" {
+			state.Pointer += 1//move on
+			continue
+		}
+		if lines[state.Pointer][0] == '@' /*if its a function*/ {
+			//name string, lines *[]string
+			//& is an address (like in mem) and * is a pointer to an address
+			funcCommandWords := strings.Split(lines[state.Pointer], " ")
+			functions.ExecuteFunction(funcCommandWords[0][1:], &lines, funcCommandWords[1:])
+			continue
+		}
+		
 		//rember that 0 is equal to start of a list
 		execute(lines[state.Pointer])
-		state.Pointer += 1// dude to this after goto is init the pointer adds one so that is why its n-1
+		state.Pointer += 1// it does this after goto is executed that is why its n+1
 	}
 }
 
 func addToCommands(command string, path string) {
 	//add to commands
+	if state.DebugMode {
 	fmt.Println("adding:" + path + " as:" + command)
+	}
 	var function Command = func(args []string) {
 		cmd := exec.Command(path, args...)
 
@@ -399,7 +435,7 @@ func addToCommands(command string, path string) {
 	_, ok := commmands[command]
 	//thnks stakoverflow: https://stackoverflow.com/questions/2050391/ddg#2050629
 	// If the key exists
-	if ok {
+	if ok && state.DebugMode {
 		// Do something
 		fmt.Println("Key is found :)")
 	} else {
@@ -408,7 +444,10 @@ func addToCommands(command string, path string) {
 }
 
 func execute(prgmstring string) {
-	if strings.TrimSpace(prgmstring) == "" {
+	if strings.TrimSpace(prgmstring) == "" {//check if empty or broken
+		return
+	}
+	if prgmstring[0] == '!' {
 		return
 	}
 	//fmt.Printf("Executing: %q\n", prgmstring) debug
