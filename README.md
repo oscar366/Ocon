@@ -25,14 +25,16 @@ If you find a reason, please tell me.
 - Math commands
 - Comments
 - Return commands
-- Everything as a string
 - Imports & fancy imports
+- Flags (eg `!debugOFF` turns off console debug output) **Not in build**
+- Updating **Not in build**
+- Functions **Not in build**
 
 ## Hopefuly new Features to come
 
 - Arrays
 - String handling
-- Better loops
+- Better loops (currently working on)
 - User input
 - Error handling
 - Files
