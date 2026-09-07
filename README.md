@@ -32,9 +32,9 @@ If you find a reason, please tell me.
 
 ## Hopefuly new Features to come
 
-- Arrays
+- Arrays (currently working on)
 - String handling
-- Better loops (currently working on)
+- Better loops 
 - User input
 - Error handling
 - Files
