@@ -101,5 +101,5 @@ func If(args []string) {
 	}
 
 	// The boolean wasn't true or false.
-	fmt.Println("Error: neither true nor false for bool")
+	fmt.Println("Error: neither true nor false for bool was: " + args[0])
 }

@@ -10,14 +10,16 @@ import (
 type Function struct {
     Value          string
     CommandsLength int
+	Sections       map[string]int
 }
 
 var Functionslist = make(map[string]Function)
 
-func AddToFunctions(str string, name string, commandsLength int) {
+func AddToFunctions(str string, name string, commandsLength int, sections map[string]int) {
     funct := Function{
         Value:          str,
         CommandsLength: commandsLength,
+		Sections: sections,
     }
 
     Functionslist[name] = funct
@@ -56,7 +58,12 @@ func ExecuteFunction(name string/*name of the func*/, lines *[]string/*pointer t
             functionLines,
             (*lines)[pointer+1:]...,
         )...,
-    )//no idea what this does wrote it a cople of days ago
+    )//no idea what this does wrote it a cople of days ago think it edits the lines
+	
+	// Add the function's sections to the global section list
+	for section, position := range val.Sections {
+		state.SectionList[section] = pointer + position
+	}
 	
     // Move pointer back so the first function line gets executed.
     //state.Pointer--

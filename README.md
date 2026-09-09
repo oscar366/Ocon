@@ -26,9 +26,9 @@ If you find a reason, please tell me.
 - Comments
 - Return commands
 - Imports & fancy imports
-- Flags (eg `!debugOFF` turns off console debug output) **Not in build**
-- Updating **Not in build**
-- Functions **Not in build**
+- Flags (eg `!debugOFF` turns off console debug output)
+- Updating 
+- Functions
 
 ## Hopefuly new Features to come
 
