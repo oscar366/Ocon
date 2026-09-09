@@ -25,7 +25,7 @@ import (
 //set PATH=%PATH%;C:\path\to\your\install\directory
 
 //set this to that tag vershion thingy 
-const Version = "v1.2.3"//ver 1, 2 new fetures, 3 debug fix from prev vir
+const Version = "v2.0.1"
 //major, minor, patch
 const versionName = "ABCS"
 

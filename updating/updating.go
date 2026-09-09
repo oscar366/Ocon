@@ -137,9 +137,6 @@ type Update struct {
 func IfNecesitoActualizar(Ver string) {
 	url := "https://api.github.com/repos/oscar366/Ocon/releases/latest"
 	
-	if time.Now().Second() % 2 != 0 {
-		return
-	}
 	
 	data, err := fetch(url)
 	if err != nil {
