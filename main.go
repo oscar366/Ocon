@@ -20,12 +20,11 @@ import (
 	"runtime"
 	"syscall"
 	"unsafe" //:-0 
-	"runtime/pprof"
 )
 //set PATH=%PATH%;C:\path\to\your\install\directory
 
 //set this to that tag vershion thingy 
-const Version = "v2.0.1"
+const Version = "v2.1.3"
 //major, minor, patch
 const versionName = "ABCS"
 
@@ -376,26 +375,43 @@ firstpos := 0
 		if len(element) > 1 && element[0] == '$' {
 			//if it is a var then replaces
 			varname := element[1:]
-
+			
+			
+			/*
+			varname := $banana|2
+			value := '1,'2,'3,'4,'5
+			*/
+			isAnArrayWithSelector := false
+			pos := -1 //-1 for unknow pois 
+			if strings.Contains(varname, "|") {
+				pos = strings.Index(element, "|")
+				varname = varname[:pos-1]//replace var name -1 to disinclude the |
+				isAnArrayWithSelector = true
+			}
+			//fmt.Println("Varname " + varname)
+			
 			val, ok := state.VarStorage[varname]
 			//if var does NOT exsit
 			if (!ok) {
-				fmt.Println("Var does not exist. Or other bug.")
+				fmt.Println("Var does not exist. VarName: " + varname)
 				return
 			}
-			/*if val[0] == "_" && strings.Contains(val, "|") {
-			    pos := strings.Index(val, "|")//I wish i lurend about this sonner
-				arraynum := val[1+pos:]
-				//get array values
-				arrayVals := [1:1+pos]
-				arrayVal := strings.Split(arrayVals, ",") //the array value we want
-				index, err := strconv.Atoi(arrayNum)
+			//fmt.Println("Val " + val)
+			//get the array value 
+			if isAnArrayWithSelector {
+				arrayItems := strings.Split(val, ",")//get all the items in an array
+				
+				//cant use varname here cuz its bean modfyed above
+				arrayIndex, err := strconv.Atoi(element[1:][pos:])//get the index and truen it into an interger
 				if err != nil {
-					// invalid index
+					fmt.Println("Error in turning array index into a int for a var array. Index: " + varname[pos+1:])
 					return
 				}
-				val := arrayVal[arraynum]
-			}*/
+				val = arrayItems[arrayIndex]//set the value to the item at index
+			}
+			
+			
+			
 			//replace with var value
 			words[i] = val
 		}

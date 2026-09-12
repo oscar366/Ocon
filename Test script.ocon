@@ -329,7 +329,12 @@ echo "==========================================
 echo "Arrays
 echo "==========================================
 
-echo _"banana,"apple,"tree|2
+echo _"❌,"❌,"✅|2
+
+var "array_var _"❌,"❌,"✅
+echo $array_var|2
+
+echo "Arrays_Done
 
 # ==========================================
 # FINAL

@@ -29,10 +29,11 @@ If you find a reason, please tell me.
 - Flags (eg `!debugOFF` turns off console debug output)
 - Updating 
 - Functions
+- Basic Arrays **NOT IN BUILD**
 
 ## Hopefuly new Features to come
 
-- Arrays (currently working on)
+- Better Arrays (currently working on)
 - String handling
 - Better loops 
 - User input
