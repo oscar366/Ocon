@@ -6,7 +6,6 @@ import "fmt"
 import "io"
 import "strconv"
 import "os"
-import "time"
 
 var necesitoactualizar = false
 

@@ -32,6 +32,7 @@ const versionName = "ABCS"
 
 func main() {
 	// Initialize CPU profiler
+	/*
 	cpuProfile, err := os.Create("cpu.pprof")
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Failed to create CPU profile: %v\n", err)
@@ -43,7 +44,7 @@ func main() {
 		fmt.Fprintf(os.Stderr, "Failed to start CPU profile: %v\n", err)
 		os.Exit(1)
 	}
-	defer pprof.StopCPUProfile()
+	defer pprof.StopCPUProfile()*/
 
 	fmt.Println("🐟")
 	
@@ -367,25 +368,51 @@ firstpos := 0
 		}
 		//if there is a "]" part but no starting counterpart
 		
-		if(element == "[") {
+		if element == "[" {
 			inreturn = true
 			firstpos = i + 1
 		}
-		
-		if(len(element) > 1 && element[0] == '$') {
+		//vars
+		if len(element) > 1 && element[0] == '$' {
 			//if it is a var then replaces
 			varname := element[1:]
-			if strings.Contains(varname, "|") {
-				fmt.Println(":::;")
-			}
+
 			val, ok := state.VarStorage[varname]
 			//if var does NOT exsit
 			if (!ok) {
 				fmt.Println("Var does not exist. Or other bug.")
 				return
 			}
+			/*if val[0] == "_" && strings.Contains(val, "|") {
+			    pos := strings.Index(val, "|")//I wish i lurend about this sonner
+				arraynum := val[1+pos:]
+				//get array values
+				arrayVals := [1:1+pos]
+				arrayVal := strings.Split(arrayVals, ",") //the array value we want
+				index, err := strconv.Atoi(arrayNum)
+				if err != nil {
+					// invalid index
+					return
+				}
+				val := arrayVal[arraynum]
+			}*/
 			//replace with var value
 			words[i] = val
+		}
+		if len(element) > 1 && element[0] == '_' && strings.Contains(element, "|") {//eg _'1,'2,'3|2 for an array
+			pos := strings.Index(element, "|") + 1 // +1 so | isent counted
+			if pos == -1 {
+				fmt.Println("there was an error in finding the index of this array :(")
+				return
+			}//Itoa
+			itemNumber, err := strconv.Atoi(element[pos:])//evryting past the selecter "|"
+			if err != nil {
+				fmt.Println("Error in converting index into a string. Index = " + element[pos:])
+				return
+			}
+			list := strings.Split(element[1:pos-1], ",") // all the elements or items in an array
+			//fmt.Printf("%v", list)
+			words[i] = list[itemNumber]
 		}
 	}
 	
@@ -450,7 +477,7 @@ func emptycommand(args []string) {
 ⠀⠀⠀⠀⠀⠀⠀ ⠀⠀⠹⣖⡰⢃⡜⢄⠳⣠⠚⣌⠖⣥⡿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠘⣎⠴⡈⢆⠱⡈⢆⠱⡠⢃⠖⣌⠣⣜⢣⠟⠁⠀⠀⠀⠀ ⠀⠀
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠓⢯⡼⣬⣓⣦⣟⣼⡿⠚⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠙⣶⣉⢆⠳⡌⡜⢢⠱⡩⢜⣤⢻⡼⠋⠀⠀ ⠀⠀⠀⠀⠀⠀
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀ ⠀⠀⠀⠉⠙⠛⠛⠋⠉⠀ ⠀⠀ ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠛⢾⣳⣼⣜⣧⣳⡽⣞⠞⠋⠀⠀⠀⠀ ⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀ ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀ ⠀⠀⠀⠀⠈⠉⣉⢉⣉⠉⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀ 
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀ ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀ ⠀⠀⠀⠀⠈⠉⣉⢉⣉⠉⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀ FROM https://emojicombos.com/linux-ascii-art I DON'T KNOW WHO CREATED IT 
 */
 func fish() {
 	//ai turned the giant painugan above into this single string im sorry but i just did not want to do it myself
