@@ -37,6 +37,8 @@ var returncommands = map[string]Function{
 		"round": mathfuncs.Round,//#
 		"abs": mathfuncs.AbsoluteValue,//#
 		"log": mathfuncs.Logarithm,//#
+		"length": length,
+		"tostring": tostring,
 }
 
 func Intrp(args []string) []string {
@@ -300,3 +302,6 @@ func not(args []string) []string {
 	}
 }
 
+func tostring(args []string) []string {
+	return []string{"\"" + args[0][1:]}
+}

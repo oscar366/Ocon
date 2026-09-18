@@ -20,13 +20,14 @@ import (
 	"runtime"
 	"syscall"
 	"unsafe" //:-0 
+	//"regexp"
 )
 //set PATH=%PATH%;C:\path\to\your\install\directory
 
 //set this to that tag vershion thingy 
-const Version = "v2.1.3"
+const Version = "v2.3.4"
 //major, minor, patch
-const versionName = "ABCS"
+const versionName = "Fih"
 
 
 func main() {
@@ -99,6 +100,7 @@ func main() {
 	default:
 		fmt.Println("Put in an a real input see `ocon help`")
 	}
+	//case ""
 }
 
 
@@ -345,32 +347,45 @@ func execute(prgmstring string) {
 	
 	words := strings.Split(prgmstring, " ")
 	
-//these are vars for in between
-inreturn := false
-//unset will set later. This is the pos of after the "["
-firstpos := 0
+	//these are vars for in between
+	inreturn := false
+	//unset will set later. This is the pos of after the "["
+	firstpos := 0
 	
-	//replaces vars with var content and does return functions
+	//for return commands with value change
+	valueChangeChar := ""
+	
+	//r, _ := regexp.Compile(`^[^"\s]\[$`) // regex for return commands its any non wihtespace char and [
+	//replaces vars with var content and does return functions and array bull
 	for i, element := range words {
 		//this is for the rutrn command
-		if inreturn && (element == "]") {
+		if inreturn && (element == "]")  {
 			//get the return of the return func interp
 			returncommand := words[firstpos:i]
 			value := returncommands.Intrp(returncommand)
 			//fmt.Println("debug. Value gotten from interp: ", value[0])
 			//rebuild the slaice with value inbtween and remove the ret command
+			if valueChangeChar != "" {//replace the type
+				value[0] = valueChangeChar + value[0] //replace the type
+			}
 			words = append(
 				words[:firstpos - 1],
 				append(value, words[i+1:]...)...,
 			)
 			inreturn = false
+			valueChangeChar = "" // reset it
 		}
 		//if there is a "]" part but no starting counterpart
-		
-		if element == "[" {
+		if len(element) > 1 && element[1] == '[' {//for return commands with value change
+			inreturn = true
+			firstpos = i + 1
+			valueChangeChar = string(element[0]) //set to the value before the [ eg "[ would be the "
+			//fmt.Printf("i=%d element=%q inreturn=%v firstpos=%d valueChangeChar=%q\n",i, element, inreturn, firstpos, valueChangeChar)
+		} else if element == "["  {
 			inreturn = true
 			firstpos = i + 1
 		}
+
 		//vars
 		if len(element) > 1 && element[0] == '$' {
 			//if it is a var then replaces
@@ -415,7 +430,7 @@ firstpos := 0
 			//replace with var value
 			words[i] = val
 		}
-		if len(element) > 1 && element[0] == '_' && strings.Contains(element, "|") {//eg _'1,'2,'3|2 for an array
+		if len(element) > 1 && element[0] == '*' && strings.Contains(element, "|") {//eg _'1,'2,'3|2 for an array
 			pos := strings.Index(element, "|") + 1 // +1 so | isent counted
 			if pos == -1 {
 				fmt.Println("there was an error in finding the index of this array :(")
@@ -430,6 +445,52 @@ firstpos := 0
 			//fmt.Printf("%v", list)
 			words[i] = list[itemNumber]
 		}
+		
+		//for adding strings and arrays
+		if i+2 <= len(words)/*check if i+2 is useable*/ && words[i+1] == "+"/*if next "word" is plus */ && ( element[0] == '*' || element[0] == '"' ) /* and im a string or an array */ {
+			replaceText := ""
+			//get type
+			switch element[0] {
+				case '"':
+					//type check
+					if words[i+2][0] != '"' {
+						fmt.Println("Error concating strings: type mismatch")
+						return
+					}
+					replaceText = "\"" + element[1:] + words[i+2][1:]
+				case '*':
+					//type check
+					if words[i+2][0] != '*' {
+						fmt.Println("Error concating arrays: type mismatch")
+						return
+					}
+					myarray := element[1:]
+					otherarray := words[i+2][1:]
+					replaceText = "*" + myarray + "," + otherarray
+				default:
+					fmt.Println("Error concating: incorect types")
+					return
+			}
+			
+			// for exaple:
+			// echo "banana + "_apple
+			// 0      1     2     3
+			//        i     i+1 i+2
+			//    |
+			//    v
+			// echo "banana_apple
+			// 0      1
+			end := i + 3
+			if end > len(words) {
+				end = len(words)
+			}
+
+			words = append(
+				words[:i],
+				append([]string{replaceText}, words[end:]...)...,
+			)
+		}
+		
 	}
 	
 	
@@ -517,3 +578,31 @@ func fish() {
 		fmt.Println(tux)
 	}
 }
+/*
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣀⡀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣤⣾⣿⣿⣷⣶⣦⣀⣀⠀⠀⢀⣀⣀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣿⣻⣷⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣾⣿⡿⠋⠙⠛⠿⣿⣿⣿⣿⣾⣿⣿⣿⣿⣶⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣠⢶⣄⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⣿⣿⠃⠀⠀⠀⠀⠀⠈⠉⠉⠉⠉⠁⢹⣿⣿⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠿⣮⡿⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣀⣾⣿⣿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⣿⣿⣿⣦⣀⡀⠀⠀⠀⠀⠀⠀⠀⢠⣴⣶⡄
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣴⣿⣿⣿⣿⣿⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠘⣿⣿⡿⢿⣿⣿⣦⠀⠀⠀⠀⠀⠀⠈⠛⠛⠁
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⣿⣿⠋⠉⢸⣿⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢻⣿⣷⢠⣾⣿⣿⠀⠀⠀⠀⠀⠀⢠⣶⣶⡆
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠸⣿⣿⣿⣶⣾⣿⣧⣤⣤⣤⣤⣤⣤⣤⣤⣤⣤⣤⣤⣤⣼⣿⣿⣿⣿⡿⠋⠀⠀⠀⠀⠀⠀⠈⠛⠛⠃
+⠀⠀⠀⣀⣀⣀⣀⣀⣀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣀⣉⣛⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣟⡛⠉⠀⠀⠀⠀⠀⠀⠀⠀⠀⣶⢿⣷⠀
+⢀⣴⣿⣿⣿⣿⣿⣿⣿⣷⣄⠀⠀⠀⠀⠀⣀⣴⣶⣿⣿⣿⣿⣿⣿⣿⠿⠿⠿⠿⠟⠛⠛⠉⠉⠉⠉⠉⠙⠛⠻⠿⣿⣿⣶⣄⠀⠀⠀⠀⠀⠀⠀⠀⢉⣉⠁⠀
+⠘⣿⣿⣿⡄⠀⠀⠀⢙⣿⣿⣆⠀⢀⣴⣿⣿⣿⠿⠛⠋⠉⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠙⢿⣿⣷⡄⠀⠀⠀⠀⠀⢸⡏⢿⡇⠀
+⠀⠀⢻⣿⣿⡄⠀⠀⠀⢻⣿⣿⢰⣿⣿⡿⠋⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣴⣦⡀⠀⠀⠀⠹⣿⣿⣆⠀⠀⠀⠀⠀⠉⠉⠀⠀
+⠀⠀⠀⢿⣿⣷⠀⠀⠀⠘⣿⣿⣿⣿⠟⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠙⠛⠁⠀⠀⠀⠀⢹⣿⣿⡄⠀⠀⢰⣶⣶⡄⠀⠀
+⠀⠀⠀⠸⣿⣿⡆⠀⠀⠀⠘⠿⠿⠃⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⣿⣿⣇⣀⣀⠸⠷⠟⠃⠀⠀
+⠀⠀⠀⠀⣿⣿⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣠⣶⣄⠀⠀⠀⠀⠀⠀⠀⣀⣀⣠⣤⣴⣴⣾⣿⣿⣿⣟⣿⡇⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⣿⣿⡇⠀⠀⠀⠀⠀⠀⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠘⢿⣿⣿⣶⣶⣶⣾⣿⣿⣿⣿⣿⡿⠿⠟⠛⣿⣿⡇⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⢰⣿⣿⡇⠀⠀⠀⠀⢠⣿⣿⣷⣄⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠉⠛⠛⠛⠛⠛⠛⠉⠉⠁⠀⠀⠀⠀⢀⣿⣿⡇⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⢀⣾⣿⣿⠁⠀⠀⠀⠀⣸⣿⣿⢿⣿⣿⣷⣤⣀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⣀⣠⣴⣾⣿⡿⠃⠀⠀⠀⠀⠀⠀⠀⠀
+⢰⣾⣿⣿⡿⠃⠀⠀⠀⠀⠀⣽⣿⣿⠀⠀⠙⠻⢿⣿⣿⣶⣶⣤⣤⣤⣤⣤⣤⣤⣤⣤⣤⣤⣶⣶⣶⣶⣶⣶⣾⣿⣿⣿⣿⡿⠟⠋⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠘⣿⣿⡏⠀⠀⠀⠀⠀⠀⣸⣿⣿⡏⠀⠀⠀⠀⠀⠉⠛⠛⠻⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠛⠛⠛⠛⠛⠛⠋⠛⠉⠀⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⢻⣿⣿⠀⠀⠀⢀⣠⣶⣿⣿⠏⠀⠀⠀⣀⣀⣀⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⢸⣿⣿⣷⣾⣿⣿⣿⡿⠛⠁⢀⣴⣿⣿⣿⣿⣿⣿⣿⣿⣦⢠⣶⣾⣶⣷⡄⠀⠀⠀⢀⣤⣤⣤⣤⣄⡀⠀⠀⣰⣶⣦⣤⣤⣤⡄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠉⠛⠉⠙⠙⠉⠁⠀⠀⠀⣿⣿⣿⠏⠉⠀⠉⠙⣿⣿⣿⣿⣿⣿⠛⠛⠁⠀⠀⣼⣿⣿⡿⠿⢿⣿⣿⣆⡀⢹⣿⣿⣿⣿⣿⣿⣦⡄⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠻⣿⣿⣶⣤⣴⣶⣾⣿⣿⠟⣿⣿⡏⠀⠀⠀⠀⠀⣿⣿⣟⠀⠀⠀⢹⣿⣿⡇⢸⣿⣿⡏⠀⠘⣿⣿⣷⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠘⠻⠿⠿⠿⠿⠟⠛⠁⠀⣿⣿⣿⣦⣤⣶⣶⡄⠙⣿⣿⣶⣶⣾⣿⣿⡿⠃⠈⣿⣿⣷⠀⠀⠸⣿⣿⣧⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠙⠻⠿⠿⠿⠿⠃⠀⠙⠛⠛⠛⠛⠛⠉⠀⠀⠀⠙⠛⠁⠀⠀⠀⠙⠛⠋⠀⠀⠀⠀⠀⠀⠀
+*/

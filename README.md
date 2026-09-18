@@ -35,7 +35,7 @@ If you find a reason, please tell me.
 
 - Better Arrays (currently working on)
 - String handling
-- Better loops 
+- Better loops (currently working on)
 - User input
 - Error handling
 - Files
