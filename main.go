@@ -25,7 +25,12 @@ import (
 //set PATH=%PATH%;C:\path\to\your\install\directory
 
 //set this to that tag vershion thingy 
-const Version = "v2.3.4"
+const Version = "v2.3.6"
+/*
+added concat
+added arrays and array handling
+fix some bugs and added changed easter egg 
+*/
 //major, minor, patch
 const versionName = "Fih"
 
@@ -100,7 +105,6 @@ func main() {
 	default:
 		fmt.Println("Put in an a real input see `ocon help`")
 	}
-	//case ""
 }
 
 

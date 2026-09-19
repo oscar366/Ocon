@@ -334,6 +334,14 @@ echo *"❌,"❌,"✅|2
 var "array_var *"❌,"❌,"✅
 echo $array_var|2
 echo "[ length *'1,"2,'32,"eeeee ]
+echo "[ append *'1,'2,'3 *'4,'5,'6 ]
+# *'1,'2,'3,'4,'5,'6
+echo "[ prepend *'4,'5,'6 *'1,'2,'3 ]
+echo "[ remove *"✅,"❌,"✅ '1 ]
+echo [ contains *"a,"b,"c "a ]
+echo [ contains *"a,"b,"c "d ] 
+echo [ indexOf *"a,"b,"c "b ]
+echo "[ join *"a,"b,"c *"d,"e,"f ]
 echo "Arrays_Done
 
 echo "========================================

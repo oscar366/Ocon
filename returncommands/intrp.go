@@ -39,6 +39,12 @@ var returncommands = map[string]Function{
 		"log": mathfuncs.Logarithm,//#
 		"length": length,
 		"tostring": tostring,
+		"append": appennd,
+		"prepend": prepend,
+		"remove": remove,
+		"contains": contains,
+		"indexOf": indexOf,
+		"join": join,
 }
 
 func Intrp(args []string) []string {
