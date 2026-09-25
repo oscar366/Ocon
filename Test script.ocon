@@ -345,6 +345,21 @@ echo "[ join *"a,"b,"c *"d,"e,"f ]
 echo "Arrays_Done
 
 echo "========================================
+echo "For_Loop
+echo "========================================
+var "n '0
+for
+increment "n '1
+echo "✅
+endfor [ < $n '5 ]
+
+echo "========================================
+echo "Muti_Return_Commands
+echo "========================================
+echo [ add [ mod '5 [ sub '3 '2 ] ] '5 ]
+
+sec "Other
+echo "========================================
 echo "Other
 echo "========================================
 

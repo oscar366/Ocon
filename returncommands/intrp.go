@@ -25,6 +25,9 @@ var returncommands = map[string]Function{
 		"isless": isless,
 		"isgreater": isgreater,
 		"isequal": isequal,
+		"=": isequal,
+		">": isgreater,
+		"<": isless,
 		"not": not,
 		
 		//more arithmetic

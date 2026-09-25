@@ -7,3 +7,5 @@ var SectionList = make(map[string]int)
 var VarStorage = make(map[string]string)
 //controlls debur prints
 var DebugMode = true
+//holds the entire ocon file (Fatty) so other packages can use it other then main 
+var DocumentData = []string{}

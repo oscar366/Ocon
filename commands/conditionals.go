@@ -2,8 +2,9 @@ package commands
 
 import (
 	"fmt"
-	//"oscarsgoofysite/OCON/state"
+	"oscarsgoofysite/OCON/state"
 	//"strconv"
+	//"strings"
 )
 
 
@@ -102,4 +103,35 @@ func If(args []string) {
 
 	// The boolean wasn't true or false.
 	fmt.Println("Error: neither true nor false for bool was: " + args[0])
+}
+
+func Endfor(args []string) {
+	//we not having the condishon in for
+	if args[0] == "~true" {
+		//go back to for loop
+		
+		//get the lines
+		
+		n := 1
+		for state.Pointer-n >= 0 && state.DocumentData[state.Pointer-n] != "for" {
+			n++
+		}
+		
+		if state.Pointer-n < 0 {
+			// "for" wasn't found
+			fmt.Println("Error: no acompnying for statement for currently executeing endfor")
+			return
+		} else {
+			// found it at state.Pointer - n
+			to := state.Pointer - n
+			state.Pointer = to - 1 //-1 cuz after this it increse sate.Pointer by 1
+		}
+	} else if args[0] == "~false" {
+		//we dont do anythin
+		return
+	} else {
+		//Error
+		fmt.Println("Non bool put in Endfor?")
+		return
+	}
 }
