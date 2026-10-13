@@ -29,15 +29,16 @@ If you find a reason, please tell me.
 - Flags (eg `!debugOFF` turns off console debug output)
 - Updating 
 - Functions
-- Basic Arrays **NOT IN BUILD**
+- Basic Arrays
+- For loops
+- Nested Returns
 
 ## Hopefuly new Features to come
 
-- Better Arrays (currently working on)
 - String handling
-- Better loops (currently working on)
 - User input
 - Error handling
+- Better IF statements
 - Files
 - Reflection
 
@@ -50,14 +51,15 @@ echo Hello_world!
 
 ### increment:
 ```ocon
-var "i '0
+var "n '0
 
-§ "loop
+for
 
-increment "i '1
-echo $i
+increment "n '1
+echo $n
 
-if [ isless $i '5 ] goto "loop else continue
+endfor [ < $n '5 ]
+
 ```
 
 ### full test script:

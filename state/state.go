@@ -1,4 +1,5 @@
 package state
+//import "error"
 //global var of the pointer wich is the location of the execute
 var Pointer int
 //this is a List that is the "sectionname":linenumber
@@ -9,3 +10,6 @@ var VarStorage = make(map[string]string)
 var DebugMode = true
 //holds the entire ocon file (Fatty) so other packages can use it other then main 
 var DocumentData = []string{}
+
+// all the commands in a pointer
+var Commands *map[string]func([]string) error

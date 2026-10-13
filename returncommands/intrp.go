@@ -11,7 +11,10 @@ import (
 )
 
 type Function func(args []string)  []string
-
+/*
+todo:
+userinput - like the regular command howevr just returns it insted
+*/
 var returncommands = map[string]Function{
 		//sums
 		"add": add,

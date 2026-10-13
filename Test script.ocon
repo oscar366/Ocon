@@ -1,3 +1,4 @@
+!debugOFF
 # ==========================================
 # OCON TEST PROGRAM
 # ==========================================
@@ -190,15 +191,7 @@ echo [ mod $x $y ]
 
 echo "=====_IF_TRUE_=====
 
-if ~true goto "iftrue else continue
-
-echo "ERROR_IF_TRUE_FAILED
-goto "after_if_true
-
-§ "iftrue
-echo "IF_TRUE_WORKED
-
-§ "after_if_true
+if ~true echo "IF_TRUE_WORKED else echo "ERROR_IF_TRUE_FAILED
 
 
 # ==========================================
@@ -207,36 +200,46 @@ echo "IF_TRUE_WORKED
 
 echo "=====_IF_FALSE_=====
 
-if ~false goto "should_not_run else continue
-
-echo "IF_FALSE_WORKED
-goto "after_if_false
-
-§ "should_not_run
-echo "ERROR_IF_FALSE_FAILED
-
-§ "after_if_false
+if ~false echo "ERROR_IF_FALSE_FAILED else echo "IF_FALSE_WORKED
 
 
 # ==========================================
-# IF ELSE GOTO
+# IF WITHOUT ELSE
 # ==========================================
 
-echo "=====_IF_ELSE_GOTO_=====
+echo "=====_IF_WITHOUT_ELSE_=====
 
-if ~false goto "wrong else goto "correct
+if ~true echo "IF_WITHOUT_ELSE_WORKED
 
-echo "ERROR_ELSE_GOTO_FAILED
-goto "after_else_test
+if ~false echo "ERROR_FALSE_IF_WITHOUT_ELSE
 
-§ "wrong
-echo "ERROR_WRONG_SECTION_RAN
-goto "after_else_test
 
-§ "correct
-echo "ELSE_GOTO_WORKED
+# ==========================================
+# IF WITH BOOLEAN FUNCTIONS
+# ==========================================
 
-§ "after_else_test
+echo "=====_IF_BOOLEAN_FUNCTIONS_=====
+
+if [ iseven '10 ] echo "10_IS_EVEN else echo "ERROR_10_IS_NOT_EVEN
+
+if [ isodd '10 ] echo "ERROR_10_IS_ODD else echo "10_IS_NOT_ODD
+
+if [ isgreater '10 '5 ] echo "10_GREATER_THAN_5 else echo "ERROR_GREATER_TEST_FAILED
+
+if [ isless '5 '10 ] echo "5_LESS_THAN_10 else echo "ERROR_LESS_TEST_FAILED
+
+if [ isequal '5 '5 ] echo "5_EQUALS_5 else echo "ERROR_EQUAL_TEST_FAILED
+
+
+# ==========================================
+# IF SETVAR
+# ==========================================
+
+echo "=====_IF_SETVAR_=====
+
+if ~true setvar "if_test '123
+
+echo $if_test
 
 
 # ==========================================
@@ -252,40 +255,22 @@ var "i '0
 increment "i '1
 echo $i
 
-if [ isless $i '5 ] goto "loop else continue
-
-echo "LOOP_FINISHED
-goto "after_loop
-
-§ "after_loop
+if [ isless $i '5 ] goto "loop else echo "LOOP_FINISHED
 
 
 # ==========================================
-# EVEN NUMBER LOOP
+# EVEN NUMBER TEST
 # ==========================================
 
 echo "=====_EVEN_NUMBER_TEST_=====
 
-var "n '0
+var "even_test '10
 
-§ "evenloop
+if [ iseven $even_test ] echo "FOUND_EVEN_NUMBER else echo "ERROR_EVEN_NUMBER_TEST_FAILED
 
-increment "n '1
+var "odd_test '11
 
-if [ iseven $n ] goto "even else goto "keepgoing
-
-§ "keepgoing
-if [ isless $n '10 ] goto "evenloop else goto "evenfailed
-
-§ "even
-echo "FOUND_EVEN_NUMBER
-echo $n
-goto "after_even_test
-
-§ "evenfailed
-echo "ERROR_NEVER_FOUND_EVEN_NUMBER
-
-§ "after_even_test
+if [ iseven $odd_test ] echo "ERROR_ODD_NUMBER_DETECTED_AS_EVEN else echo "ODD_NUMBER_TEST_WORKED
 
 
 # ==========================================
@@ -301,30 +286,35 @@ echo [ mlt '100000 '1000 ]
 # 3000000
 # 100000000
 
+
 # ==========================================
 # FUNCTIONS
 # ==========================================
+
 echo "==========================================
 echo "FUNCTIONS
 echo "==========================================
 
 func "sayHi
+
 var "n '0
+
 sec "🐠
 
 echo "🐟
 increment "n '1
 
-if [ isless $n '5 ] goto "🐠 else continue
+if [ isless $n '5 ] goto "🐠 else echo "FUNCTION_FINISHED
 
-echo "FUNCTION_FINISHED
 end @sayHi
 
 @sayHi
 
+
 # ==========================================
-# Arrays
+# ARRAYS
 # ==========================================
+
 echo "==========================================
 echo "Arrays
 echo "==========================================
@@ -333,43 +323,111 @@ echo *"❌,"❌,"✅|2
 
 var "array_var *"❌,"❌,"✅
 echo $array_var|2
+
 echo "[ length *'1,"2,'32,"eeeee ]
+
 echo "[ append *'1,'2,'3 *'4,'5,'6 ]
 # *'1,'2,'3,'4,'5,'6
+
 echo "[ prepend *'4,'5,'6 *'1,'2,'3 ]
+
 echo "[ remove *"✅,"❌,"✅ '1 ]
+
 echo [ contains *"a,"b,"c "a ]
-echo [ contains *"a,"b,"c "d ] 
+echo [ contains *"a,"b,"c "d ]
+
 echo [ indexOf *"a,"b,"c "b ]
+
 echo "[ join *"a,"b,"c *"d,"e,"f ]
+
 echo "Arrays_Done
+
+
+# ==========================================
+# FOR LOOP
+# ==========================================
 
 echo "========================================
 echo "For_Loop
 echo "========================================
+
 var "n '0
+
 for
+
 increment "n '1
 echo "✅
+
 endfor [ < $n '5 ]
 
-echo "========================================
-echo "Muti_Return_Commands
-echo "========================================
-echo [ add [ mod '5 [ sub '3 '2 ] ] '5 ]
+
+# ==========================================
+# OTHER
+# ==========================================
 
 sec "Other
+
 echo "========================================
 echo "Other
 echo "========================================
 
+echo [ add [ mod '5 [ sub '3 '2 ] ] '5 ]
+
 echo "✅ + "✅
+
 echo [ tostring *"✅,"✅,"✅ + *"✅,"✅,"✅ ]
+
+echo "========================================
+echo "Easter_eggs
+echo "========================================
+
+🐟
+
+# ==========================================
+# ERROR HANDLING
+# ==========================================
+
+sec "error_hadling
+
+echo "========================================
+echo "ERROR_HANDLING
+echo "========================================
+
+# echo with no arguments should produce an error
+try "a echo
+
+echo $a
+
+try if ~true throwError "HI_THERE
+
+# ==========================================
+# VARIABLE CLEANUP
+# ==========================================
+
+sec "cleanup
+
+echo "=====_VARIABLE_CLEANUP_=====
+
+unlink "a
+unlink "b
+unlink "counter
+unlink "x
+unlink "y
+unlink "if_test
+unlink "i
+unlink "even_test
+unlink "odd_test
+unlink "n
+unlink "array_var
+
+echo "ALL_VARIABLES_UNLINKED
 
 # ==========================================
 # FINAL
 # ==========================================
+
 sec "fin
+
 echo "=================================
 echo "ALL_TESTS_REACHED_END
 echo "=================================

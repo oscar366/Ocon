@@ -1,111 +1,21 @@
 package commands
 
 import (
-	"fmt"
 	"oscarsgoofysite/OCON/state"
+	"oscarsgoofysite/OCON/helpers"
+	"oscarsgoofysite/OCON/helpers/executeExecute"
 	//"strconv"
 	//"strings"
+	//"time"
+	"os"
+	"slices"
 )
 
 
-//90% of the coding is mine the rest is ai :(. 
+
 //However all ideas and methouds of doing are my ideas
-func If(args []string) {
-	// args does NOT contain "if"
-	//
-	// Example:
-	// if ~true goto "main else continue
-	//
-	// args:
-	// 0 = ~true
-	// 1 = goto
-	// 2 = "main
-	// 3 = else
-	// 4 = continue
-	//
-	// Another possible form:
-	//
-	// if ~false continue else goto "main
-	//
-	// args:
-	// 0 = ~false
-	// 1 = continue
-	// 2 = else
-	// 3 = goto
-	// 4 = "main
 
-	if len(args) == 0 {
-		fmt.Println("Error: not enough args for if")
-		return
-	}
-
-	// The first argument should be ~true or ~false.
-	boolValue := args[0][1:]
-
-	// If the boolean is true, execute the command
-	// immediately after it.
-	if boolValue == "true" {
-
-		// true + goto
-		if args[1] == "goto" {
-			GotoCmd([]string{args[2]})
-			return
-		}
-
-		// true + continue
-		if args[1] == "continue" {
-			return
-		}
-	}
-
-	// If the boolean is false, skip the first command
-	// and execute whatever comes after "else".
-	if boolValue == "false" {
-
-		// false + goto/continue + else
-		if args[2] == "else" {
-
-			// false goto "x else ...
-			if args[3] == "goto" {
-				GotoCmd([]string{args[4]})
-				return
-			}
-
-			// false continue else ...
-			if args[3] == "continue" {
-				return
-			}
-		}
-
-		// false + continue + else
-		//
-		// This is different because "else" is at args[2].
-		//
-		// 0 = ~false
-		// 1 = continue
-		// 2 = else
-		// 3 = goto/continue
-		// 4 = "label
-		if args[1] == "continue" && args[2] == "else" {
-
-			if args[3] == "goto" {
-				GotoCmd([]string{args[4]})
-				return
-			}
-
-			if args[3] == "continue" {
-				return
-			}
-		}
-
-		return
-	}
-
-	// The boolean wasn't true or false.
-	fmt.Println("Error: neither true nor false for bool was: " + args[0])
-}
-
-func Endfor(args []string) {
+func Endfor(args []string) error {
 	//we not having the condishon in for
 	if args[0] == "~true" {
 		//go back to for loop
@@ -119,8 +29,7 @@ func Endfor(args []string) {
 		
 		if state.Pointer-n < 0 {
 			// "for" wasn't found
-			fmt.Println("Error: no acompnying for statement for currently executeing endfor")
-			return
+			return helpers.NewError("Error: no acompnying for statement for currently executeing endfor")
 		} else {
 			// found it at state.Pointer - n
 			to := state.Pointer - n
@@ -128,10 +37,88 @@ func Endfor(args []string) {
 		}
 	} else if args[0] == "~false" {
 		//we dont do anythin
-		return
+		return nil
 	} else {
 		//Error
-		fmt.Println("Non bool put in Endfor?")
-		return
+		return helpers.NewError("Non bool put in Endfor?")
+	}
+	return nil
+}
+func If(args []string) error {
+	//check if it has else and loc
+	elsePos := slices.Index(args, "else")//find pos of else
+	
+	
+	if args[0] == "~true" {
+		if elsePos == -1 {
+			return ifCommands(args[1:])
+		} else {
+			return ifCommands(args[1:elsePos])
+		}
+	} else if args[0] == "~false" {
+		if elsePos == -1 {//if no else
+			return nil
+		} else {
+			/* elsePos+1
+			   if cmd args else cmd args
+								 ^
+								 |
+								 
+				[(elsePos+1):]
+				
+				if cmd args else cmd args
+								  [    ]
+			*/
+			return ifCommands(args[(elsePos+1):])
+		}
+	} else {
+		return helpers.NewError("Got nether '~true' nor '~false' in if bool")
+	}
+}
+func ifCommands(args []string) error {
+	if len(args) == 0 {
+		return helpers.NewError("if statement has no command")
+	}
+
+	cmd := args[0]
+	cmdArgs := args[1:]
+
+	switch cmd {
+
+	case "execute":
+		return executeExecute.ExecuteCommand(cmdArgs)
+
+	case "goto":
+		return GotoCmd(cmdArgs)
+
+	case "continue":
+		if len(cmdArgs) != 0 {
+			return helpers.NewError("In if statement continue args was not = 0")
+		}
+		return nil
+
+	case "setvar":
+		return VarCmd(cmdArgs)
+
+	case "throwError":
+		if len(cmdArgs) != 1 {
+			return helpers.NewError("In if statement throwError args was not = 1")
+		}
+		return helpers.NewError(cmdArgs[0][1:])
+
+	case "echo":
+		return EchoCmd(cmdArgs)
+
+	case "crash":
+		if len(cmdArgs) != 0 {
+			return helpers.NewError("In if statement crash args was not = 0")
+		}
+		os.Exit(0)
+		return nil
+
+	default:
+		return helpers.NewError(
+			"Not a command in IF maybe you should ask oscar to add it?",
+		)
 	}
 }
