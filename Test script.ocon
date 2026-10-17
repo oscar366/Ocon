@@ -361,27 +361,7 @@ echo "✅
 endfor [ < $n '5 ]
 
 
-# ==========================================
-# OTHER
-# ==========================================
 
-sec "Other
-
-echo "========================================
-echo "Other
-echo "========================================
-
-echo [ add [ mod '5 [ sub '3 '2 ] ] '5 ]
-
-echo "✅ + "✅
-
-echo [ tostring *"✅,"✅,"✅ + *"✅,"✅,"✅ ]
-
-echo "========================================
-echo "Easter_eggs
-echo "========================================
-
-🐟
 
 # ==========================================
 # ERROR HANDLING
@@ -400,13 +380,83 @@ echo $a
 
 try if ~true throwError "HI_THERE
 
+echo "========================================
+echo "RUN_AND_START
+echo "========================================
+
+sec "run_and_start
+# run waits
+# run "notepad.exe "Test script.ocon"
+# start doesnt
+# start "notepad.exe "Test script.ocon"
+
+echo "Run_and_start_have_been_commeted_out_if_you_would_like_to_use_them_please_undo_the_comments
+
+
+
+
+echo "========================================
+echo "Easter_eggs
+echo "========================================
+
+# 🥚
+echo "The_easter_egg_above_has_been_commented_out_uncomment_it_if_you_want_to_see_it
+
+echo "========================================
+echo "User_Input
+echo "========================================
+
+echo [ inputbool ~true ]
+
+var "a [ inputnum ~true ]
+echo [ concat $a "_+_ "2_= ]
+echo [ add $a '2 ]
+
+var "b [ inputchar ~true ]
+echo $b
+var "array_var *"a,"b,"c,"d
+if [ contains $array_var $b ] echo "array_does_contain_your_char else echo "array_does_NOT_contain_your_char
+
+# echo "Waiting_until_G_key_Is_Pressed
+# waituntilkeypressed "G
+# var "n ~false
+# echo "Testing_ifkeypressed_KEY=G
+# for
+
+# ifkeypressed "G setvar "n ~true
+
+# endfor [ = $n ~true ]
+
+# ==========================================
+# OTHER
+# ==========================================
+
+sec "Other
+
+echo "========================================
+echo "Other
+echo "========================================
+
+echo [ add [ mod '5 [ sub '3 '2 ] ] '5 ]
+
+echo "✅ + "✅
+
+echo [ tostring *"✅,"✅,"✅ + *"✅,"✅,"✅ ]
+allvars
+
+echo [ tonum "3 ]
+
+
+
 # ==========================================
 # VARIABLE CLEANUP
 # ==========================================
 
 sec "cleanup
 
-echo "=====_VARIABLE_CLEANUP_=====
+echo "========================================
+echo "CLEANUP
+echo "========================================
 
 unlink "a
 unlink "b

@@ -32,13 +32,13 @@ If you find a reason, please tell me.
 - Basic Arrays
 - For loops
 - Nested Returns
+- Error handling **NOT IN BUILD**
+- Better IF statements **NOT IN BUILD**
 
 ## Hopefuly new Features to come
 
 - String handling
 - User input
-- Error handling
-- Better IF statements
 - Files
 - Reflection
 

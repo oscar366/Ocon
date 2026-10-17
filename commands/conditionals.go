@@ -118,7 +118,7 @@ func ifCommands(args []string) error {
 
 	default:
 		return helpers.NewError(
-			"Not a command in IF maybe you should ask oscar to add it?",
+			"Not a command in IF [" + cmd + "] maybe you should ask oscar to add it?",
 		)
 	}
 }

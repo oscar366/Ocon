@@ -28,11 +28,17 @@ import (
 
 
 //set this to that tag vershion thingy 
-const Version = "v3.3.0"
+const Version = "v3.7.1"
 /*
 added errors
 made better if statements
 new easteregg
+added wait
+added start and run
+added allvars
+userinput
+
+added tonum
 */
 //major, minor, patch
 const versionName = "Fih"
@@ -141,13 +147,14 @@ func readFile(path string) {
 
 /*
 cmds:
-wait - wait for a sertan amount of time
-🥚 - easter egg
-start - start a program and contuine
-run - run a program and wait until it stops
-userinput - put user input into a var
+wait - wait for a sertan amount of time#
+🥚 - easter egg #
+start - start a program and contuine #
+run - run a program and wait until it stops #
+userinput - put user input into a var 
 unlink - remove var from memory  #
-allvars
+allvars - print all vars#
+
 */
 type Command = func([]string) error
 var Commmands = map[string]Command{//typo i cant fix commmands
@@ -180,6 +187,19 @@ var Commmands = map[string]Command{//typo i cant fix commmands
 	"unlink": commands.UnLinkVar,
 	//eastereggs
 	"🥚": easteregg,
+	"🐟": easteregg,
+	"🫃": easteregg,
+	
+	//other0
+	"wait": commands.Wait,
+	"start": commands.Start,
+	"run": commands.Run,
+	"allvars": commands.Allvars,
+	
+	//userinput
+	/*"ifkeypressed": commands.Ifkeyispressed,
+	"waituntilkeypressed": commands.Waituntilkeypressed,*/
+	
 }
 
 

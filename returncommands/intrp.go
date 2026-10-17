@@ -13,7 +13,10 @@ import (
 type Function func(args []string)  []string
 /*
 todo:
-userinput - like the regular command howevr just returns it insted
+tostring - in the name #
+tonum - same as above #
+userinput - like the regular command howevr just returns it insted #
+
 */
 var returncommands = map[string]Function{
 		//sums
@@ -45,12 +48,21 @@ var returncommands = map[string]Function{
 		"log": mathfuncs.Logarithm,//#
 		"length": length,
 		"tostring": tostring,
+		"tonum": tonum,
 		"append": appennd,
 		"prepend": prepend,
 		"remove": remove,
 		"contains": contains,
 		"indexOf": indexOf,
 		"join": join,
+		"concat": concat,
+		//userinput
+		"inputbool": inputbool,
+		
+		"inputnum": inputnum,
+		
+		"inputchar": inputchar,
+		
 }
 
 func Intrp(args []string) []string {
@@ -316,4 +328,22 @@ func not(args []string) []string {
 
 func tostring(args []string) []string {
 	return []string{"\"" + args[0][1:]}
+}
+
+func concat(args []string) []string {
+    var final string
+
+    for i := 0; i < len(args); i++ {
+        final += args[i][1:]
+    }
+
+    return []string{"\"" + final}
+}
+
+func tonum(args []string) []string {
+	if len(args) != 1 {
+		fmt.Println("tonum only takes one input")
+		return []string{"tonum only takes one input"}
+	}
+	return []string{"'" + args[0][1:]}
 }

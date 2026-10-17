@@ -1,7 +1,7 @@
 package commands
 
 import (
-	//"fmt"
+	"fmt"
 	"oscarsgoofysite/OCON/helpers"
 	"oscarsgoofysite/OCON/state"
 	"strconv"
@@ -119,5 +119,14 @@ func DecremntCmd(args []string) error {
 
 	current = current - inc // converts the string into a number were 1: (as strings are arrys of chars) uis everytihng past the "   and then adds it to the vars value
 	state.VarStorage[varname] = "\"" + strconv.Itoa(current) // return to string
+	return nil
+}
+
+func Allvars(args []string) error {
+	
+	// loop over elements of slice
+	for key, value := range  state.VarStorage {
+		fmt.Printf("%s: %s\n", key, value)
+	}
 	return nil
 }
